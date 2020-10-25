@@ -310,8 +310,8 @@ void UProcMeshScalingComponent::HandleBeginCursorOver(AActor* TouchedActor)
 
 void UProcMeshScalingComponent::HandleEndCursorOver(AActor* TouchedActor)
 {
-	HandleReleased(TouchedActor, FKey());
-	
+// 	HandleReleased(TouchedActor, FKey());
+// 	
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
 		PlayerController->CurrentMouseCursor = EMouseCursor::Default;

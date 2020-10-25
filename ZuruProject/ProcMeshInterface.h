@@ -22,8 +22,8 @@ public:
 	virtual void SetRadius(const FVector& InRadius) =0;
 	virtual FVector GetRadius() const =0;
 	virtual FVector GetMinRadius() const =0;
-	virtual void Extrude(const FVector& InDelta) = 0;
-	virtual void Intrude(const FVector& InDelta) = 0;
+	virtual void Extrude(const FVector& InDelta) =0;
+	virtual void Intrude(const FVector& InDelta) =0;
 	virtual void SetMaterial(UMaterialInterface* InMaterial) =0;
 	virtual void ClearMesh() =0;
 
