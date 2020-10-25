@@ -26,6 +26,45 @@ void AProcMeshCompositeTable::SetRadius(const FVector& InRadius)
 	SetupChairs();
 }
 
+void AProcMeshCompositeTable::SetCollisionProfileName(const FName& InProfileName)
+{
+	if (InProfileName != NAME_None)
+	{
+		if (TableMesh)
+		{
+			TableMesh->SetCollisionProfileName(InProfileName);
+		}
+		for (AProcMeshChair* TopSideChair : TopSideChairs)
+		{
+			if (TopSideChair)
+			{
+				TopSideChair->SetCollisionProfileName(InProfileName);
+			}
+		}
+		for (AProcMeshChair* RightSideChair : RightSideChairs)
+		{
+			if (RightSideChair)
+			{
+				RightSideChair->SetCollisionProfileName(InProfileName);
+			}
+		}
+		for (AProcMeshChair* BottomSideChair : BottomSideChairs)
+		{
+			if (BottomSideChair)
+			{
+				BottomSideChair->SetCollisionProfileName(InProfileName);
+			}
+		}
+		for (AProcMeshChair* LeftSideChair : LeftSideChairs)
+		{
+			if (LeftSideChair)
+			{
+				LeftSideChair->SetCollisionProfileName(InProfileName);
+			}
+		}
+	}
+}
+
 void AProcMeshCompositeTable::SetMaterial(UMaterialInterface* InMaterial)
 {
 	// If MainMaterial is not set via BP, try using internal materials for chairs and table
@@ -68,6 +107,7 @@ void AProcMeshCompositeTable::ClearMesh()
 	if (TableMesh)
 	{
 		TableMesh->ClearMesh();
+		TableMesh->Destroy();
 	}
 	for (TArray<AProcMeshChair*> ChairArray : { TopSideChairs, RightSideChairs, BottomSideChairs, LeftSideChairs })
 	{
@@ -75,7 +115,8 @@ void AProcMeshCompositeTable::ClearMesh()
 		{
 			if (ChairMesh)
 			{
-				ChairMesh->ClearMesh();
+				TableMesh->ClearMesh();
+				TableMesh->Destroy();
 			}
 		}
 		ChairArray.Empty();
@@ -94,6 +135,9 @@ void AProcMeshCompositeTable::GenerateMesh()
 	ValidateDimensions();
 
 	SetupChairs();
+
+	SetCollisionProfileName(CollisionProfileName);
+	SetMaterial(MainMaterial);
 }
 
 void AProcMeshCompositeTable::GenerateInitialMeshes()
@@ -235,8 +279,8 @@ void AProcMeshCompositeTable::SetupChairs()
 			AProcMeshChair* RemovedRightSideChair = RightSideChairs.Pop();
 			if (RemovedLeftSideChair && RemovedRightSideChair)
 			{
-				RemovedLeftSideChair->Destroy();
-				RemovedRightSideChair->Destroy();
+				RemovedLeftSideChair->ClearMesh();
+				RemovedRightSideChair->ClearMesh();
 			}
 		}
 		

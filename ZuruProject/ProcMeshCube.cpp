@@ -11,6 +11,7 @@ AProcMeshCube::AProcMeshCube(const FObjectInitializer& ObjectInitializer)
 	MinRadius = FVector(1.f, 1.f, 1.f);
 
 	CubeMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
+	CubeMesh->SetCollisionProfileName(CollisionProfileName);
 	CubeMesh->SetupAttachment(SceneComponent);
 }
 
@@ -54,10 +55,20 @@ void AProcMeshCube::SetRadius(const FVector& InRadius)
 	}
 }
 
+void AProcMeshCube::SetCollisionProfileName(const FName& InProfileName)
+{
+	if (InProfileName != NAME_None && CubeMesh)
+	{
+		CollisionProfileName = InProfileName;
+		CubeMesh->SetCollisionProfileName(InProfileName);
+	}
+}
+
 void AProcMeshCube::SetMaterial(UMaterialInterface* InMaterial)
 {
-	if (CubeMesh)
+	if (InMaterial && CubeMesh)
 	{
+		MainMaterial = InMaterial;
 		CubeMesh->SetMaterial(0, InMaterial);
 	}
 }
@@ -150,6 +161,9 @@ void AProcMeshCube::GenerateMesh()
 			true
 		);
 	}
+
+	SetCollisionProfileName(CollisionProfileName);
+	SetMaterial(MainMaterial);
 
 	// Workaround to avoid messed up transform when actor and mesh do not have the same world transform
 	SetActorTransform(ActualTransform);

@@ -6,7 +6,11 @@
 
 
 class AProcMeshBase;
+class UMaterialInterface;
 
+/**
+ * Component that controls the spawning process of any ProcMeshBase into the scene
+ */
 UCLASS(Blueprintable)
 class ZURUPROJECT_API UProcMeshSpawningComponent : public UActorComponent
 {
@@ -14,26 +18,52 @@ class ZURUPROJECT_API UProcMeshSpawningComponent : public UActorComponent
 
 public:
 
-	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
-	virtual void ActivateComponent();
+	virtual void GenerateSpawnableMesh();
+
 	UFUNCTION(BlueprintCallable, Category = "Utility")
-	virtual void DeactivateComponent();
+	virtual void ActivateComponent(const bool InbActivate);
 	UFUNCTION(BlueprintCallable, Category = "Utility")
-	virtual void ActivateSpawning();
+	virtual bool IsComponentActive() const;
+
 	UFUNCTION(BlueprintCallable, Category = "Utility")
-	virtual void DeactivateSpawning();
+	virtual void ActivateSpawning(const bool InbActivate);
+
+	UFUNCTION(BlueprintCallable, Category = "Utility")
+	virtual AProcMeshBase* SpawnMesh();
 
 protected:
 
+	UFUNCTION(BlueprintCallable, Category = "Internals")
+	virtual void ClearSpawnableMesh();
+
+	void BindEvents();
+	void UnbindEvents();
+
+	UFUNCTION()
+	void HandleSpawnableMeshBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	UFUNCTION()
+	void HandleSpawnableMeshEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Actor Classes")
 	TSubclassOf<AProcMeshBase> MeshClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Materials")
+	UMaterialInterface* ActivatedStateMaterial = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Materials")
+	UMaterialInterface* DeactivatedStateMaterial = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Collisions")
+	FName SpawnMeshCollisionProfileName;
 
 private:
 
 	UPROPERTY()
 	AProcMeshBase* SpawnableMesh = nullptr;
+
+	bool bIsActive;
+	bool bCanSpawn;
 
 };

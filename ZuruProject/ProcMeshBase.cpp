@@ -17,6 +17,7 @@ AProcMeshBase::AProcMeshBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	MinRadius = FVector(10.f, 10.f, 10.f);
+	CollisionProfileName = FName("ProceduralMesh");
 
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = SceneComponent;
@@ -90,6 +91,16 @@ void AProcMeshBase::Intrude(const FVector& InDelta)
 		InDelta.Y < 0 ? -(Radius.Y - OldRadius.Y) : Radius.Y - OldRadius.Y,
 		InDelta.Z < 0 ? -(Radius.Z - OldRadius.Z) : Radius.Z - OldRadius.Z
 	));
+}
+
+void AProcMeshBase::SetCollisionProfileName(const FName& InProfileName)
+{
+	CollisionProfileName = InProfileName;
+}
+
+FName AProcMeshBase::GetCollisionProfileName() const
+{
+	return CollisionProfileName;
 }
 
 void AProcMeshBase::ClearMesh()

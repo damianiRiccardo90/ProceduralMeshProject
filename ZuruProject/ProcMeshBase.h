@@ -46,18 +46,20 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual void SetRadius(const FVector& InRadius) override;
-
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual FVector GetRadius() const override;
-
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual FVector GetMinRadius() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual void Extrude(const FVector& InDelta);
-
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual void Intrude(const FVector& InDelta);
+
+	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
+	virtual void SetCollisionProfileName(const FName& InProfileName) override;
+	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
+	virtual FName GetCollisionProfileName() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual void SetMaterial(UMaterialInterface* InMaterial) override;
@@ -83,6 +85,9 @@ protected:
 	FVector Radius;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Radius")
 	FVector MinRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Collisions")
+	FName CollisionProfileName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Materials")
 	UMaterialInterface* MainMaterial = nullptr;

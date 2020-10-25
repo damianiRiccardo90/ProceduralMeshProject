@@ -65,10 +65,24 @@ void AProcMeshTable::SetRadius(const FVector& InRadius)
 	}
 }
 
+void AProcMeshTable::SetCollisionProfileName(const FName& InProfileName)
+{
+	if (InProfileName != NAME_None && TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && PlankMesh)
+	{
+		CollisionProfileName = InProfileName;
+		TopLeftLegMesh->SetCollisionProfileName(InProfileName);
+		TopRightLegMesh->SetCollisionProfileName(InProfileName);
+		BottomRightLegMesh->SetCollisionProfileName(InProfileName);
+		BottomLeftLegMesh->SetCollisionProfileName(InProfileName);
+		PlankMesh->SetCollisionProfileName(InProfileName);
+	}
+}
+
 void AProcMeshTable::SetMaterial(UMaterialInterface* InMaterial)
 {
-	if (TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && PlankMesh)
+	if (InMaterial && TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && PlankMesh)
 	{
+		MainMaterial = InMaterial;
 		TopLeftLegMesh->SetMaterial(InMaterial);
 		TopRightLegMesh->SetMaterial(InMaterial);
 		BottomRightLegMesh->SetMaterial(InMaterial);
@@ -82,10 +96,15 @@ void AProcMeshTable::ClearMesh()
 	if (TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && PlankMesh)
 	{
 		TopLeftLegMesh->ClearMesh();
+		TopLeftLegMesh->Destroy();
 		TopRightLegMesh->ClearMesh();
+		TopRightLegMesh->Destroy();
 		BottomRightLegMesh->ClearMesh();
+		BottomRightLegMesh->Destroy();
 		BottomLeftLegMesh->ClearMesh();
+		BottomLeftLegMesh->Destroy();
 		PlankMesh->ClearMesh();
+		PlankMesh->Destroy();
 	}
 }
 
@@ -111,19 +130,18 @@ void AProcMeshTable::GenerateMesh()
 	{
 		TopLeftLegMesh->SetRadius(LegRadius);
 		TopLeftLegMesh->SetActorRelativeLocation(TopLeftLegPosition);
-
 		TopRightLegMesh->SetRadius(LegRadius);
 		TopRightLegMesh->SetActorRelativeLocation(TopRightLegPosition);
-
 		BottomRightLegMesh->SetRadius(LegRadius);
 		BottomRightLegMesh->SetActorRelativeLocation(BottomRightLegPosition);
-
 		BottomLeftLegMesh->SetRadius(LegRadius);
 		BottomLeftLegMesh->SetActorRelativeLocation(BottomLeftLegPosition);
-
 		PlankMesh->SetRadius(PlankRadius);
 		PlankMesh->SetActorRelativeLocation(PlankPosition);
 	}
+
+	SetCollisionProfileName(CollisionProfileName);
+	SetMaterial(MainMaterial);
 }
 
 void AProcMeshTable::ValidateDimensions()

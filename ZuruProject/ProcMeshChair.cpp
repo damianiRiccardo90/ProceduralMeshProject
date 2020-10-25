@@ -67,10 +67,25 @@ void AProcMeshChair::SetRadius(const FVector& InRadius)
 	}
 }
 
+void AProcMeshChair::SetCollisionProfileName(const FName& InProfileName)
+{
+	if (InProfileName != NAME_None && TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && SeatMesh && BackrestMesh)
+	{
+		CollisionProfileName = InProfileName;
+		TopLeftLegMesh->SetCollisionProfileName(InProfileName);
+		TopRightLegMesh->SetCollisionProfileName(InProfileName);
+		BottomRightLegMesh->SetCollisionProfileName(InProfileName);
+		BottomLeftLegMesh->SetCollisionProfileName(InProfileName);
+		SeatMesh->SetCollisionProfileName(InProfileName);
+		BackrestMesh->SetCollisionProfileName(InProfileName);
+	}
+}
+
 void AProcMeshChair::SetMaterial(UMaterialInterface* InMaterial)
 {
-	if (TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && SeatMesh && BackrestMesh)
+	if (InMaterial && TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && SeatMesh && BackrestMesh)
 	{
+		MainMaterial = InMaterial;
 		TopLeftLegMesh->SetMaterial(InMaterial);
 		TopRightLegMesh->SetMaterial(InMaterial);
 		BottomRightLegMesh->SetMaterial(InMaterial);
@@ -85,11 +100,17 @@ void AProcMeshChair::ClearMesh()
 	if (TopLeftLegMesh && TopRightLegMesh && BottomRightLegMesh && BottomLeftLegMesh && SeatMesh && BackrestMesh)
 	{
 		TopLeftLegMesh->ClearMesh();
+		TopLeftLegMesh->Destroy();
 		TopRightLegMesh->ClearMesh();
+		TopRightLegMesh->Destroy();
 		BottomRightLegMesh->ClearMesh();
+		BottomRightLegMesh->Destroy();
 		BottomLeftLegMesh->ClearMesh();
+		BottomLeftLegMesh->Destroy();
 		SeatMesh->ClearMesh();
+		SeatMesh->Destroy();
 		BackrestMesh->ClearMesh();
+		BackrestMesh->Destroy();
 	}
 }
 
@@ -117,22 +138,20 @@ void AProcMeshChair::GenerateMesh()
 	{
 		TopLeftLegMesh->SetRadius(LegRadius);
 		TopLeftLegMesh->SetActorRelativeLocation(TopLeftLegPosition);
-
 		TopRightLegMesh->SetRadius(LegRadius);
 		TopRightLegMesh->SetActorRelativeLocation(TopRightLegPosition);
-
 		BottomRightLegMesh->SetRadius(LegRadius);
 		BottomRightLegMesh->SetActorRelativeLocation(BottomRightLegPosition);
-
 		BottomLeftLegMesh->SetRadius(LegRadius);
 		BottomLeftLegMesh->SetActorRelativeLocation(BottomLeftLegPosition);
-
 		SeatMesh->SetRadius(SeatRadius);
 		SeatMesh->SetActorRelativeLocation(SeatPosition);
-
 		BackrestMesh->SetRadius(BackrestRadius);
 		BackrestMesh->SetActorRelativeLocation(BackrestPosition);
 	}
+
+	SetCollisionProfileName(CollisionProfileName);
+	SetMaterial(MainMaterial);
 }
 
 void AProcMeshChair::ValidateDimensions()

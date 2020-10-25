@@ -24,6 +24,8 @@ public:
 	virtual FVector GetMinRadius() const =0;
 	virtual void Extrude(const FVector& InDelta) =0;
 	virtual void Intrude(const FVector& InDelta) =0;
+	virtual void SetCollisionProfileName(const FName& InProfileName) =0;
+	virtual FName GetCollisionProfileName() const =0;
 	virtual void SetMaterial(UMaterialInterface* InMaterial) =0;
 	virtual void ClearMesh() =0;
 

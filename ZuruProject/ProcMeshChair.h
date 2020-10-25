@@ -19,6 +19,7 @@ class ZURUPROJECT_API AProcMeshChair : public AProcMeshBase
 public:
 
 	virtual void SetRadius(const FVector& InRadius) override;
+	virtual void SetCollisionProfileName(const FName& InProfileName) override;
 	virtual void SetMaterial(UMaterialInterface* InMaterial) override;
 	virtual void ClearMesh() override;
 

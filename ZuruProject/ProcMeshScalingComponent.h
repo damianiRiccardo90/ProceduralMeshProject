@@ -17,6 +17,9 @@ enum class EGrabbedHandle : uint8
 
 class AProcMeshCube;
 
+/**
+ * Component that can be attached to any ProcMeshBase that control the scaling of the mesh
+ */
 UCLASS(Blueprintable)
 class ZURUPROJECT_API UProcMeshScalingComponent : public UActorComponent
 {
@@ -33,10 +36,10 @@ public:
 
 protected:
 
-	UFUNCTION(BlueprintCallable, Category = "Utility")
+	UFUNCTION(BlueprintCallable, Category = "Internals")
 	virtual void ClearHandles();
 
-	UFUNCTION(BlueprintCallable, Category = "Utility")
+	UFUNCTION(BlueprintCallable, Category = "Internals")
 	virtual void ResetHandlesLocation();
 
 	void BindEvents();
@@ -56,9 +59,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Grab Handles")
 	TSubclassOf<AProcMeshCube> GrabHandleClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Snap Grid")
-	FVector SnapGridRadius;
-
 private:
 
 	UPROPERTY()
@@ -72,8 +72,6 @@ private:
 
 	FVector PlaneNormal;
 	FPlane UpperSurfacePlane;
-	//FVector StartingPoint;
-	//FVector2D DeltaSize;
 	EGrabbedHandle GrabbedHandle;
 
 };

@@ -12,10 +12,8 @@
 UCLASS()
 class ZURUPROJECT_API AFreeSpectatorPawn : public ASpectatorPawn
 {
-	GENERATED_BODY()
+	GENERATED_UCLASS_BODY()
 
 public:
-
-	AFreeSpectatorPawn(const class FObjectInitializer& ObjectInitializer);
 
 };

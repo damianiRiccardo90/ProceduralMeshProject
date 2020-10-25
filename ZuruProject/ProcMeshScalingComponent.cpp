@@ -14,7 +14,6 @@ UProcMeshScalingComponent::UProcMeshScalingComponent(const FObjectInitializer& O
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	GrabHandleRadius = FVector(15.f, 15.f, 15.f);
-	SnapGridRadius = FVector(5.f, 5.f, 5.f);
 	GrabbedHandle = EGrabbedHandle::NONE;
 }
 
@@ -60,10 +59,7 @@ void UProcMeshScalingComponent::TickComponent(float DeltaTime, enum ELevelTick T
 					if (GrabbedHandle == EGrabbedHandle::TopLeft)
 					{
 						const FVector TopLeftHandleLoc = TopLeftGrabHandle->GetActorLocation();
-						//UKismetSystemLibrary::DrawDebugLine(this, CursorLocation, HitResult.ImpactPoint, FLinearColor::Yellow, 20.f, 3.f);
-						//UKismetSystemLibrary::DrawDebugPoint(this, FVector(Intersection.X, Intersection.Y, TopLeftHandleLoc.Z), 30.f, FLinearColor::Black, 20.f);
 						const FVector StretchVector = Intersection - TopLeftHandleLoc;
-						//UKismetSystemLibrary::DrawDebugArrow(this, TopLeftHandleLoc, Intersection, 6.f, FLinearColor::Red, 20.f, 3.f);
 						if (StretchVector.X > 0)
 						{
 							OwnerActor->Intrude(FVector(-FMath::Abs(StretchVector.X), 0.f, 0.f));
