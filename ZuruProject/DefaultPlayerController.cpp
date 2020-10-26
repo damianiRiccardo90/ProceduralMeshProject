@@ -3,6 +3,7 @@
 #include "FreeSpectatorPawn.h"
 #include "ProcMeshSpawningComponent.h"
 #include <GameFramework/InputSettings.h>
+#include "PrintToScreenWidget.h"
 
 
 ADefaultPlayerController::ADefaultPlayerController(const class FObjectInitializer& ObjectInitializer)
@@ -18,12 +19,35 @@ ADefaultPlayerController::ADefaultPlayerController(const class FObjectInitialize
 	EditingSpectatorClass = AEditingSpectatorPawn::StaticClass();
 	FreeSpectatorClass = AFreeSpectatorPawn::StaticClass();
 
+	EditingCameraInputActionName = FName("EditingCamera");
+	FreeCameraInputActionName = FName("FreeCamera");
+	ToggleSpawningComponentInputActionName = FName("ToggleSpawningComponent");
+	SpawnMeshInputActionName = FName("SpawnMesh");
+	ToggleUIInputActionName = FName("ToggleUI");
+	MoveForwardAxisMappingName = FName("MoveForward");
+	MoveRightAxisMappingName = FName("MoveRight");
+	RotateXAxisMappingName = FName("RotateX");
+	RotateYAxisMappingName = FName("RotateY");
+
 	bIsHelpMessageShown = false;
 }
 
 void ADefaultPlayerController::BeginPlay()
 {
 	CreateSpectators();
+
+	SpawningComponent = NewObject<UProcMeshSpawningComponent>(this, ProcMeshSpawningComponentClass);
+	if (SpawningComponent)
+	{
+		SpawningComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	}
+
+	PrintWidget = CreateWidget<UPrintToScreenWidget>(this, PrintToScreenWidgetClass);
+	if (PrintWidget)
+	{
+		PrintWidget->AddToViewport();
+		PrintWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 
 	bStartAsEditingCamera ? SwitchToEditingSpectator() : SwitchToFreeSpectator();
 }
@@ -58,13 +82,13 @@ AFreeSpectatorPawn* ADefaultPlayerController::GetFreeSpectator() const
 	return FreeSpectator;
 }
 
-void ADefaultPlayerController::ToggleHelpMessage()
+void ADefaultPlayerController::ShowHelpMessage(const bool InbShow)
 {
 	if (bIsHelpMessageShown)
 	{
-		if (GEngine)
+		if (PrintWidget)
 		{
-			GEngine->ClearOnScreenDebugMessages();
+			PrintWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 	else
@@ -93,6 +117,7 @@ void ADefaultPlayerController::Bind(const bool bHasFixedSpectator)
 	{
 		InputComponent->BindAction(TEXT("EditingCamera"), IE_Pressed, this, &ThisClass::SwitchToEditingSpectator);
 		InputComponent->BindAction(TEXT("FreeCamera"), IE_Pressed, this, &ThisClass::SwitchToFreeSpectator);
+		InputComponent->BindAction(TEXT("ToggleUI"), IE_Pressed, this, &ThisClass::ToggleHelpMessage);
 
 		if (bHasFixedSpectator)
 		{
@@ -117,6 +142,98 @@ void ADefaultPlayerController::Unbind()
 	{
 		InputComponent->AxisBindings.Empty();
 		InputComponent->ClearActionBindings();
+	}
+}
+
+void ADefaultPlayerController::ShowEditingModeHelpMessage()
+{
+	if (PrintWidget)
+	{
+		TArray<FText> MessageLines;
+
+		MessageLines.Add(
+			FText::FromString("EditingMode")
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(EditingCameraInputActionName), GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(FreeCameraInputActionName), GetInputMappingKeyDisplayName(FreeCameraInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("CameraMovements => {0}"),
+				GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(ToggleSpawningComponentInputActionName), GetInputMappingKeyDisplayName(ToggleSpawningComponentInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(SpawnMeshInputActionName), GetInputMappingKeyDisplayName(SpawnMeshInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(ToggleUIInputActionName), GetInputMappingKeyDisplayName(ToggleUIInputActionName)
+			)
+		);
+
+		PrintWidget->PrintToScreen(MessageLines);
+
+		PrintWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+}
+
+void ADefaultPlayerController::ShowFreeModeHelpMessage()
+{
+	if (PrintWidget)
+	{
+		TArray<FText> MessageLines;
+
+		MessageLines.Add(
+			FText::FromString("FreeCameraMode")
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(EditingCameraInputActionName), GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(FreeCameraInputActionName), GetInputMappingKeyDisplayName(FreeCameraInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("CameraMovements => {0}"),
+				GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+			)
+		);
+		MessageLines.Add(
+			FText::Format(
+				FText::FromString("{0} => {1}"),
+				FText::FromName(ToggleUIInputActionName), GetInputMappingKeyDisplayName(ToggleUIInputActionName)
+			)
+		);
+
+		PrintWidget->PrintToScreen(MessageLines);
+
+		PrintWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	}
 }
 
@@ -206,7 +323,7 @@ void ADefaultPlayerController::SpectatorRotateY(const float Value)
 
 void ADefaultPlayerController::ToggleSpawningComponent()
 {
-	if (UProcMeshSpawningComponent* SpawningComponent = FindComponentByClass<UProcMeshSpawningComponent>())
+	if (SpawningComponent)
 	{
 		SpawningComponent->ActivateComponent(!SpawningComponent->IsComponentActive());
 	}
@@ -214,53 +331,15 @@ void ADefaultPlayerController::ToggleSpawningComponent()
 
 void ADefaultPlayerController::SpawnMesh()
 {
-	if (UProcMeshSpawningComponent* SpawningComponent = FindComponentByClass<UProcMeshSpawningComponent>())
+	if (SpawningComponent)
 	{
 		SpawningComponent->SpawnMesh();
 	}
 }
 
-void ADefaultPlayerController::ShowEditingModeHelpMessage()
+void ADefaultPlayerController::ToggleHelpMessage()
 {
-	if (GEngine)
-	{
-		FText EditCamera_KeyDisplayName;
-		FText FreeCamera_KeyDisplayName;
-		FText CameraMovement_KeyDisplayName;
-		FString MoveRightKeyName;
-		FString EditingModeKeyName;
-		FString FreeModeKeyName;
-		FString ToggleSpawningModeKeyName;
-		FString SpawnMeshKeyName;
-		if (UInputSettings* InputSettings = UInputSettings::GetInputSettings())
-		{
-			TArray<FInputActionKeyMapping> InputActionMappings;
-			InputSettings->GetActionMappingByName(EditingCameraInputActionName, InputActionMappings);
-			for (int32 i = 0; i < InputActionMappings.Num(); i++)
-			{
-				InputActionMappings[i].Key.GetDisplayName()
-			}
-		}
-		FString ModeStr = "EditingMode";
-		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Yellow, ModeStr);
-
-
-		FString FormattedString = FText::Format(FText::FromString("The O'Bow Lya ORIGIN IS --> Xo: {0} Yo: {1} Zo: {2}!"),
-			FText::AsNumber(TestMeshActor->GetActorLocation().X), FText::AsNumber(TestMeshActor->GetActorLocation().Y), FText::AsNumber(TestMeshActor->GetActorLocation().Z)).ToString();
-		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, TEXT("The Oak Anne IS MARONNO!"));
-	}
-}
-
-void ADefaultPlayerController::ShowFreeModeHelpMessage()
-{
-	if (GEngine)
-	{
-		FString ModeStr = "FreeCameraMode";
-		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, ModeStr);
-
-
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("The Oak Anne IS BOYADIO!"));
-	}
+	ShowHelpMessage(!bIsHelpMessageShown);
 }
 
 FText ADefaultPlayerController::GetInputMappingKeyDisplayName(const FName& InputMappingName) const
@@ -276,7 +355,7 @@ FText ADefaultPlayerController::GetInputMappingKeyDisplayName(const FName& Input
 			KeysDisplayNameStr += InputActionMappings[i].Key.GetDisplayName().ToString();
 			if (InputActionMappings.Num() > 1 && i < InputActionMappings.Num() - 1)
 			{
-				KeysDisplayNameStr += ", ";
+				KeysDisplayNameStr += " | ";
 			}
 		}
 	}

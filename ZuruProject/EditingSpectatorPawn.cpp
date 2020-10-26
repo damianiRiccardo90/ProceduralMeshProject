@@ -2,6 +2,7 @@
 
 
 AEditingSpectatorPawn::AEditingSpectatorPawn(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	bAddDefaultMovementBindings = false;
 }

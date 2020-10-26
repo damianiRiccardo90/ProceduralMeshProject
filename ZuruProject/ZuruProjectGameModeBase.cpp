@@ -5,6 +5,7 @@
 
 
 AZuruProjectGameModeBase::AZuruProjectGameModeBase(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	PlayerControllerClass = ADefaultPlayerController::StaticClass();
 	DefaultPawnClass = nullptr;

@@ -15,6 +15,8 @@ enum class ECameraMode : uint8
 
 class AEditingSpectatorPawn;
 class AFreeSpectatorPawn;
+class UPrintToScreenWidget;
+class UProcMeshSpawningComponent;
 
 /**
  * The default player controller for this project
@@ -42,27 +44,34 @@ public:
 protected:
 
 	virtual void SetupInputComponent() override;
-
 	void Bind(const bool bHasFixedSpectator);
 	void Unbind();
-	void SwitchToEditingSpectator();
-	void SwitchToFreeSpectator();
-
-	void EditingMoveForward(const float Value);
-	void EditingMoveRight(const float Value);
-
-	void SpectatorMoveForward(const float Value);
-	void SpectatorMoveRight(const float Value);
-	void SpectatorRotateX(const float Value);
-	void SpectatorRotateY(const float Value);
-
-	void ToggleSpawningComponent();
-	void SpawnMesh();
-
 	void ShowEditingModeHelpMessage();
 	void ShowFreeModeHelpMessage();
-
 	FText GetInputMappingKeyDisplayName(const FName& InputMappingName) const;
+
+	UFUNCTION()
+	void SwitchToEditingSpectator();
+	UFUNCTION()
+	void SwitchToFreeSpectator();
+	UFUNCTION()
+	void ToggleHelpMessage();
+	UFUNCTION()
+	void ToggleSpawningComponent();
+	UFUNCTION()
+	void SpawnMesh();
+	UFUNCTION()
+	void EditingMoveForward(const float Value);
+	UFUNCTION()
+	void EditingMoveRight(const float Value);
+	UFUNCTION()
+	void SpectatorMoveForward(const float Value);
+	UFUNCTION()
+	void SpectatorMoveRight(const float Value);
+	UFUNCTION()
+	void SpectatorRotateX(const float Value);
+	UFUNCTION()
+	void SpectatorRotateY(const float Value);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Cameras")
 	FVector EditingSpectatorStartingLocation;
@@ -79,23 +88,29 @@ protected:
 	TSubclassOf<ASpectatorPawn> EditingSpectatorClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Classes")
 	TSubclassOf<ASpectatorPawn> FreeSpectatorClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Classes")
+	TSubclassOf<UPrintToScreenWidget> PrintToScreenWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Classes")
+	TSubclassOf<UProcMeshSpawningComponent> ProcMeshSpawningComponentClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Input Actions")
-	FName EditingCameraInputActionName = FName("EditingCamera");
+	FName EditingCameraInputActionName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Input Actions")
-	FName FreeCameraInputActionName = FName("FreeCamera");
+	FName FreeCameraInputActionName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Input Actions")
-	FName ToggleSpawningComponentInputActionName = FName("ToggleSpawningComponent");
+	FName ToggleSpawningComponentInputActionName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Input Actions")
-	FName SpawnMeshInputActionName = FName("SpawnMesh");
+	FName SpawnMeshInputActionName;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Input Actions")
+	FName ToggleUIInputActionName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Axis Mapping")
-	FName MoveForwardAxisMappingName = FName("MoveForward");
+	FName MoveForwardAxisMappingName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Axis Mapping")
-	FName MoveRightAxisMappingName = FName("MoveRight");
+	FName MoveRightAxisMappingName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Axis Mapping")
-	FName RotateXAxisMappingName = FName("RotateX");
+	FName RotateXAxisMappingName;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Axis Mapping")
-	FName RotateYAxisMappingName = FName("RotateY");
+	FName RotateYAxisMappingName;
 
 private:
 
@@ -103,6 +118,10 @@ private:
 	AEditingSpectatorPawn* EditingSpectator = nullptr;
 	UPROPERTY()
 	AFreeSpectatorPawn* FreeSpectator = nullptr;
+	UPROPERTY()
+	UProcMeshSpawningComponent* SpawningComponent = nullptr;
+	UPROPERTY()
+	UPrintToScreenWidget* PrintWidget = nullptr;
 
 	ECameraMode Mode;
 	bool bIsHelpMessageShown;

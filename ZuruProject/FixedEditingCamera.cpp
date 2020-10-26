@@ -3,6 +3,7 @@
 
 
 AFixedEditingCamera::AFixedEditingCamera(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 // 	if (UCameraComponent* CameraComponentPtr = GetCameraComponent())
 // 	{
