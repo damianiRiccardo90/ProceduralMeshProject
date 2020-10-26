@@ -11,7 +11,8 @@ UProcMeshSpawningComponent::UProcMeshSpawningComponent(const FObjectInitializer&
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	MeshClass = AProcMeshCompositeTable::StaticClass();
-	SpawnMeshCollisionProfileName = FName("SpawnableMesh");
+	MeshIndicatorClass = AProcMeshCompositeTable::StaticClass();
+	SpawnMeshCollisionProfileName = FName("IndicatorMesh");
 
 	bIsActive = false;
 	bCanSpawn = false;
@@ -28,30 +29,30 @@ void UProcMeshSpawningComponent::TickComponent(float DeltaTime, enum ELevelTick 
 			FHitResult HitResult;
 			PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), false, HitResult);
 
-			if (SpawnableMesh)
+			if (IndicatorMesh)
 			{
-				SpawnableMesh->SetActorLocation(HitResult.ImpactPoint + FVector(0.f, 0.f, SpawnableMesh->GetRadius().Z));
+				IndicatorMesh->SetActorLocation(HitResult.ImpactPoint + FVector(0.f, 0.f, IndicatorMesh->GetRadius().Z));
 			}
 		}
 	}
 }
 
-void UProcMeshSpawningComponent::GenerateSpawnableMesh()
+void UProcMeshSpawningComponent::GenerateIndicatorMesh()
 {
-	ClearSpawnableMesh();
+	ClearIndicatorMesh();
 
 	if (UWorld* World = GetWorld())
 	{
-		SpawnableMesh = World->SpawnActor<AProcMeshBase>(
-			MeshClass,
+		IndicatorMesh = World->SpawnActor<AProcMeshBase>(
+			MeshIndicatorClass,
 			FVector::ZeroVector,
 			FRotator::ZeroRotator,
 			FActorSpawnParameters()
 		);
-		if (SpawnableMesh)
+		if (IndicatorMesh)
 		{
-			SpawnableMesh->SetCollisionProfileName(SpawnMeshCollisionProfileName);
-			SpawnableMesh->SetMaterial(DeactivatedStateMaterial);
+			IndicatorMesh->SetCollisionProfileName(SpawnMeshCollisionProfileName);
+			IndicatorMesh->SetMaterial(DeactivatedStateMaterial);
 		}
 	}
 
@@ -62,11 +63,11 @@ void UProcMeshSpawningComponent::ActivateComponent(const bool InbActivate)
 {
 	if (InbActivate)
 	{
-		GenerateSpawnableMesh();
+		GenerateIndicatorMesh();
 	}
 	else
 	{
-		ClearSpawnableMesh();
+		ClearIndicatorMesh();
 	}
 
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
@@ -74,11 +75,11 @@ void UProcMeshSpawningComponent::ActivateComponent(const bool InbActivate)
 		if (InbActivate)
 		{
 			FHitResult HitResult;
-			PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), false, HitResult);
+			PlayerController->GetHitResultUnderCursorForObjects({ UEngineTypes::ConvertToObjectType(ECC_WorldStatic) }, false, HitResult);
 
-			if (SpawnableMesh)
+			if (IndicatorMesh)
 			{
-				SpawnableMesh->SetActorLocation(HitResult.ImpactPoint + FVector(0.f, 0.f, SpawnableMesh->GetRadius().Z));
+				IndicatorMesh->SetActorLocation(HitResult.ImpactPoint + FVector(0.f, 0.f, IndicatorMesh->GetRadius().Z));
 			}
 
 			PlayerController->CurrentMouseCursor = EMouseCursor::Hand;
@@ -136,40 +137,40 @@ AProcMeshBase* UProcMeshSpawningComponent::SpawnMesh()
 	return SpawnedMesh;
 }
 
-void UProcMeshSpawningComponent::ClearSpawnableMesh()
+void UProcMeshSpawningComponent::ClearIndicatorMesh()
 {
 	UnbindEvents();
 
-	if (SpawnableMesh)
+	if (IndicatorMesh)
 	{
-		SpawnableMesh->ClearMesh();
-		SpawnableMesh->Destroy();
+		IndicatorMesh->ClearMesh();
+		IndicatorMesh->Destroy();
 	}
 }
 
 void UProcMeshSpawningComponent::BindEvents()
 {
-	if (SpawnableMesh)
+	if (IndicatorMesh)
 	{
-		SpawnableMesh->OnActorBeginOverlap.AddDynamic(this, &ThisClass::HandleSpawnableMeshBeginOverlap);
-		SpawnableMesh->OnActorEndOverlap.AddDynamic(this, &ThisClass::HandleSpawnableMeshEndOverlap);
+		IndicatorMesh->OnActorBeginOverlap.AddDynamic(this, &ThisClass::HandleIndicatorMeshBeginOverlap);
+		IndicatorMesh->OnActorEndOverlap.AddDynamic(this, &ThisClass::HandleIndicatorMeshEndOverlap);
 	}
 }
 
 void UProcMeshSpawningComponent::UnbindEvents()
 {
-	if (SpawnableMesh)
+	if (IndicatorMesh)
 	{
-		SpawnableMesh->OnActorBeginOverlap.RemoveDynamic(this, &ThisClass::HandleSpawnableMeshBeginOverlap);
-		SpawnableMesh->OnActorEndOverlap.RemoveDynamic(this, &ThisClass::HandleSpawnableMeshEndOverlap);
+		IndicatorMesh->OnActorBeginOverlap.RemoveDynamic(this, &ThisClass::HandleIndicatorMeshBeginOverlap);
+		IndicatorMesh->OnActorEndOverlap.RemoveDynamic(this, &ThisClass::HandleIndicatorMeshEndOverlap);
 	}
 }
 
-void UProcMeshSpawningComponent::HandleSpawnableMeshBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void UProcMeshSpawningComponent::HandleIndicatorMeshBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (SpawnableMesh)
+	if (IndicatorMesh)
 	{
-		SpawnableMesh->SetMaterial(DeactivatedStateMaterial);
+		IndicatorMesh->SetMaterial(DeactivatedStateMaterial);
 	}
 
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
@@ -180,11 +181,11 @@ void UProcMeshSpawningComponent::HandleSpawnableMeshBeginOverlap(AActor* Overlap
 	bCanSpawn = false;
 }
 
-void UProcMeshSpawningComponent::HandleSpawnableMeshEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void UProcMeshSpawningComponent::HandleIndicatorMeshEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (SpawnableMesh)
+	if (IndicatorMesh)
 	{
-		SpawnableMesh->SetMaterial(ActivatedStateMaterial);
+		IndicatorMesh->SetMaterial(ActivatedStateMaterial);
 	}
 
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))

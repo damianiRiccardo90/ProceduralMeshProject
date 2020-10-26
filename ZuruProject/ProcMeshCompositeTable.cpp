@@ -24,6 +24,9 @@ void AProcMeshCompositeTable::SetRadius(const FVector& InRadius)
 	ValidateDimensions();
 	
 	SetupChairs();
+
+	SetCollisionProfileName(CollisionProfileName);
+	SetMaterial(MainMaterial);
 }
 
 void AProcMeshCompositeTable::SetCollisionProfileName(const FName& InProfileName)
@@ -115,8 +118,8 @@ void AProcMeshCompositeTable::ClearMesh()
 		{
 			if (ChairMesh)
 			{
-				TableMesh->ClearMesh();
-				TableMesh->Destroy();
+				ChairMesh->ClearMesh();
+				ChairMesh->Destroy();
 			}
 		}
 		ChairArray.Empty();

@@ -9,5 +9,5 @@ AEditingSpectatorPawn::AEditingSpectatorPawn(const class FObjectInitializer& Obj
 
 void AEditingSpectatorPawn::MoveForward(float Val)
 {
-	Super::MoveUp_World(Val);
+	AddMovementInput(FVector(0.f, -1.f, 0.f), Val);
 }

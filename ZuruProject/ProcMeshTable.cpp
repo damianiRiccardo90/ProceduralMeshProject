@@ -8,6 +8,8 @@ AProcMeshTable::AProcMeshTable(const FObjectInitializer& ObjectInitializer)
 	Radius = FVector(100.f, 100.f, 42.5f);
 	LegRadius = FVector(10.f, 10.f, 37.5f);
 	PlankRadius = FVector(100.f, 100.f, 5.f);
+
+	CubeMeshClass = AProcMeshCube::StaticClass();
 }
 
 FVector AProcMeshTable::GetLegRadius() const
@@ -112,11 +114,11 @@ void AProcMeshTable::GenerateMesh()
 {
 	ClearMesh();
 
-	SpawnMeshActor<AProcMeshCube>(TopLeftLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(TopRightLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(BottomRightLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(BottomLeftLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(PlankMesh, AProcMeshCube::StaticClass());
+	SpawnMeshActor<AProcMeshCube>(TopLeftLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(TopRightLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(BottomRightLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(BottomLeftLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(PlankMesh, CubeMeshClass);
 
 	ValidateDimensions();
 

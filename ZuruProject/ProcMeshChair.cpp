@@ -10,6 +10,8 @@ AProcMeshChair::AProcMeshChair(const FObjectInitializer& ObjectInitializer)
 	SeatRadius = FVector(25.f, 25.f, 2.5f);
 	BackrestRadius = FVector(25.f, 2.5f, 25.f);
 	MinRadius = FVector(LegRadius.X * 3, LegRadius.Y * 3, MinRadius.Z);
+
+	CubeMeshClass = AProcMeshCube::StaticClass();
 }
 
 void AProcMeshChair::SetRadius(const FVector& InRadius)
@@ -118,12 +120,12 @@ void AProcMeshChair::GenerateMesh()
 {
 	ClearMesh();
 
-	SpawnMeshActor<AProcMeshCube>(TopLeftLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(TopRightLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(BottomRightLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(BottomLeftLegMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(SeatMesh, AProcMeshCube::StaticClass());
-	SpawnMeshActor<AProcMeshCube>(BackrestMesh, AProcMeshCube::StaticClass());
+	SpawnMeshActor<AProcMeshCube>(TopLeftLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(TopRightLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(BottomRightLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(BottomLeftLegMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(SeatMesh, CubeMeshClass);
+	SpawnMeshActor<AProcMeshCube>(BackrestMesh, CubeMeshClass);
 
 	ValidateDimensions();
 

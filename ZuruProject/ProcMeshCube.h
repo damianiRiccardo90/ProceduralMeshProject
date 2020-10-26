@@ -49,6 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Vertex Color")
 	FLinearColor BackBottomLeftColor = FLinearColor::Red;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Collisions")
+	bool bActivateProceduralMeshCollision;
+
 private:
 
 	UPROPERTY()

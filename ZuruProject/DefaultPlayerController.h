@@ -48,7 +48,6 @@ protected:
 	void Unbind();
 	void ShowEditingModeHelpMessage();
 	void ShowFreeModeHelpMessage();
-	FText GetInputMappingKeyDisplayName(const FName& InputMappingName) const;
 
 	UFUNCTION()
 	void SwitchToEditingSpectator();
@@ -91,7 +90,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Classes")
 	TSubclassOf<UPrintToScreenWidget> PrintToScreenWidgetClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Classes")
-	TSubclassOf<UProcMeshSpawningComponent> ProcMeshSpawningComponentClass;
+	TSubclassOf<UProcMeshSpawningComponent> SpawningComponentClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Input Actions")
 	FName EditingCameraInputActionName;
@@ -118,8 +117,6 @@ private:
 	AEditingSpectatorPawn* EditingSpectator = nullptr;
 	UPROPERTY()
 	AFreeSpectatorPawn* FreeSpectator = nullptr;
-	UPROPERTY()
-	UProcMeshSpawningComponent* SpawningComponent = nullptr;
 	UPROPERTY()
 	UPrintToScreenWidget* PrintWidget = nullptr;
 

@@ -10,8 +10,9 @@ AProcMeshCube::AProcMeshCube(const FObjectInitializer& ObjectInitializer)
 	Radius = FVector(100.f, 100.f, 100.f);
 	MinRadius = FVector(1.f, 1.f, 1.f);
 
+	bActivateProceduralMeshCollision = true;
+
 	CubeMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
-	CubeMesh->SetCollisionProfileName(CollisionProfileName);
 	CubeMesh->SetupAttachment(SceneComponent);
 }
 
@@ -158,7 +159,7 @@ void AProcMeshCube::GenerateMesh()
 			MeshData.UVs,
 			MeshData.Colors,
 			MeshData.Tangents,
-			true
+			bActivateProceduralMeshCollision
 		);
 	}
 

@@ -21,7 +21,7 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
-	virtual void GenerateSpawnableMesh();
+	virtual void GenerateIndicatorMesh();
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
 	virtual void ActivateComponent(const bool InbActivate);
@@ -37,18 +37,20 @@ public:
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Internals")
-	virtual void ClearSpawnableMesh();
+	virtual void ClearIndicatorMesh();
 
 	void BindEvents();
 	void UnbindEvents();
 
 	UFUNCTION()
-	void HandleSpawnableMeshBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void HandleIndicatorMeshBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 	UFUNCTION()
-	void HandleSpawnableMeshEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void HandleIndicatorMeshEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Actor Classes")
 	TSubclassOf<AProcMeshBase> MeshClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Actor Classes")
+	TSubclassOf<AProcMeshBase> MeshIndicatorClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Materials")
 	UMaterialInterface* ActivatedStateMaterial = nullptr;
@@ -61,7 +63,7 @@ protected:
 private:
 
 	UPROPERTY()
-	AProcMeshBase* SpawnableMesh = nullptr;
+	AProcMeshBase* IndicatorMesh = nullptr;
 
 	bool bIsActive;
 	bool bCanSpawn;

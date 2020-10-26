@@ -31,6 +31,8 @@ public:
 
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FProcMeshSetRadiusSignature, const FVector&, NewRadius);
+
 class USceneComponent;
 class UMaterialInterface;
 
@@ -66,6 +68,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Mesh Utility")
 	virtual void ClearMesh() override;
+
+	UPROPERTY(BlueprintAssignable, Category = "Delegates")
+	FProcMeshSetRadiusSignature OnSetRadius;
 
 protected:
 

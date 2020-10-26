@@ -16,6 +16,6 @@ class ZURUPROJECT_API AEditingSpectatorPawn : public ASpectatorPawn
 
 public:
 
-	virtual void MoveForward(float Val) override;
+	virtual void MoveForward(float Val);
 
 };

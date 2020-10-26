@@ -28,6 +28,9 @@ protected:
 	virtual void GenerateMesh() override;
 	virtual void ValidateDimensions() override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Classes")
+	TSubclassOf<AProcMeshCube> CubeMeshClass;
+
 private:
 
 	UPROPERTY()

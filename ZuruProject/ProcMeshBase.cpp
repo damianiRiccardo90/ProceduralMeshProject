@@ -44,6 +44,8 @@ void AProcMeshBase::SetRadius(const FVector& InRadius)
 	Radius = InRadius;
 
 	GenerateMesh();
+
+	OnSetRadius.Broadcast(InRadius);
 }
 
 FVector AProcMeshBase::GetRadius() const

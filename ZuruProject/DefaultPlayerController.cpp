@@ -7,6 +7,7 @@
 
 
 ADefaultPlayerController::ADefaultPlayerController(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	bAutoManageActiveCameraTarget = false;
 
@@ -18,6 +19,8 @@ ADefaultPlayerController::ADefaultPlayerController(const class FObjectInitialize
 
 	EditingSpectatorClass = AEditingSpectatorPawn::StaticClass();
 	FreeSpectatorClass = AFreeSpectatorPawn::StaticClass();
+	PrintToScreenWidgetClass = UPrintToScreenWidget::StaticClass();
+	//ProcMeshSpawningComponentClass = UProcMeshSpawningComponent::StaticClass();
 
 	EditingCameraInputActionName = FName("EditingCamera");
 	FreeCameraInputActionName = FName("FreeCamera");
@@ -34,13 +37,9 @@ ADefaultPlayerController::ADefaultPlayerController(const class FObjectInitialize
 
 void ADefaultPlayerController::BeginPlay()
 {
-	CreateSpectators();
+	Super::BeginPlay();
 
-	SpawningComponent = NewObject<UProcMeshSpawningComponent>(this, ProcMeshSpawningComponentClass);
-	if (SpawningComponent)
-	{
-		SpawningComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	}
+	CreateSpectators();
 
 	PrintWidget = CreateWidget<UPrintToScreenWidget>(this, PrintToScreenWidgetClass);
 	if (PrintWidget)
@@ -50,6 +49,8 @@ void ADefaultPlayerController::BeginPlay()
 	}
 
 	bStartAsEditingCamera ? SwitchToEditingSpectator() : SwitchToFreeSpectator();
+
+	ShowHelpMessage(true);
 }
 
 void ADefaultPlayerController::CreateSpectators()
@@ -157,37 +158,37 @@ void ADefaultPlayerController::ShowEditingModeHelpMessage()
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(EditingCameraInputActionName), GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+				FText::FromName(EditingCameraInputActionName), FText::FromString("1")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(FreeCameraInputActionName), GetInputMappingKeyDisplayName(FreeCameraInputActionName)
+				FText::FromName(FreeCameraInputActionName), FText::FromString("2")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("CameraMovements => {0}"),
-				GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+				FText::FromString("W | A | S | D")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(ToggleSpawningComponentInputActionName), GetInputMappingKeyDisplayName(ToggleSpawningComponentInputActionName)
+				FText::FromName(ToggleSpawningComponentInputActionName), FText::FromString("Right Mouse Click")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(SpawnMeshInputActionName), GetInputMappingKeyDisplayName(SpawnMeshInputActionName)
+				FText::FromName(SpawnMeshInputActionName), FText::FromString("Left Mouse Click")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(ToggleUIInputActionName), GetInputMappingKeyDisplayName(ToggleUIInputActionName)
+				FText::FromName(ToggleUIInputActionName), FText::FromString("H")
 			)
 		);
 
@@ -209,25 +210,25 @@ void ADefaultPlayerController::ShowFreeModeHelpMessage()
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(EditingCameraInputActionName), GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+				FText::FromName(EditingCameraInputActionName), FText::FromString("1")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(FreeCameraInputActionName), GetInputMappingKeyDisplayName(FreeCameraInputActionName)
+				FText::FromName(FreeCameraInputActionName), FText::FromString("2")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("CameraMovements => {0}"),
-				GetInputMappingKeyDisplayName(EditingCameraInputActionName)
+				FText::FromString("W | A | S | D")
 			)
 		);
 		MessageLines.Add(
 			FText::Format(
 				FText::FromString("{0} => {1}"),
-				FText::FromName(ToggleUIInputActionName), GetInputMappingKeyDisplayName(ToggleUIInputActionName)
+				FText::FromName(ToggleUIInputActionName), FText::FromString("H")
 			)
 		);
 
@@ -252,6 +253,11 @@ void ADefaultPlayerController::SwitchToEditingSpectator()
 	bEnableMouseOverEvents = true;
 	bEnableClickEvents = true;
 
+	if (bIsHelpMessageShown)
+	{
+		ShowEditingModeHelpMessage();
+	}
+
 	Mode = ECameraMode::EditingMode;
 }
 
@@ -269,6 +275,16 @@ void ADefaultPlayerController::SwitchToFreeSpectator()
 	bShowMouseCursor = false;
 	bEnableMouseOverEvents = false;
 	bEnableClickEvents = false;
+
+	if (bIsHelpMessageShown)
+	{
+		ShowFreeModeHelpMessage();
+	}
+
+	if (UProcMeshSpawningComponent* SpawningComponent = Cast<UProcMeshSpawningComponent>(GetComponentByClass(SpawningComponentClass)))
+	{
+		SpawningComponent->ActivateComponent(false);
+	}
 
 	Mode = ECameraMode::FreeMode;
 }
@@ -323,7 +339,7 @@ void ADefaultPlayerController::SpectatorRotateY(const float Value)
 
 void ADefaultPlayerController::ToggleSpawningComponent()
 {
-	if (SpawningComponent)
+	if (UProcMeshSpawningComponent* SpawningComponent = Cast<UProcMeshSpawningComponent>(GetComponentByClass(SpawningComponentClass)))
 	{
 		SpawningComponent->ActivateComponent(!SpawningComponent->IsComponentActive());
 	}
@@ -331,7 +347,7 @@ void ADefaultPlayerController::ToggleSpawningComponent()
 
 void ADefaultPlayerController::SpawnMesh()
 {
-	if (SpawningComponent)
+	if (UProcMeshSpawningComponent* SpawningComponent = Cast<UProcMeshSpawningComponent>(GetComponentByClass(SpawningComponentClass)))
 	{
 		SpawningComponent->SpawnMesh();
 	}
@@ -340,25 +356,4 @@ void ADefaultPlayerController::SpawnMesh()
 void ADefaultPlayerController::ToggleHelpMessage()
 {
 	ShowHelpMessage(!bIsHelpMessageShown);
-}
-
-FText ADefaultPlayerController::GetInputMappingKeyDisplayName(const FName& InputMappingName) const
-{
-	FString KeysDisplayNameStr = "";
-
-	if (UInputSettings* InputSettings = UInputSettings::GetInputSettings())
-	{
-		TArray<FInputActionKeyMapping> InputActionMappings;
-		InputSettings->GetActionMappingByName(EditingCameraInputActionName, InputActionMappings);
-		for (int32 i = 0; i < InputActionMappings.Num(); i++)
-		{
-			KeysDisplayNameStr += InputActionMappings[i].Key.GetDisplayName().ToString();
-			if (InputActionMappings.Num() > 1 && i < InputActionMappings.Num() - 1)
-			{
-				KeysDisplayNameStr += " | ";
-			}
-		}
-	}
-
-	return FText::FromString(KeysDisplayNameStr);
 }
