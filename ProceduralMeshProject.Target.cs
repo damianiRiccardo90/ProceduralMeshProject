@@ -3,12 +3,12 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class ZuruProjectTarget : TargetRules
+public class ProceduralMeshProjectTarget : TargetRules
 {
-	public ZuruProjectTarget( TargetInfo Target) : base(Target)
+	public ProceduralMeshProjectTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "ZuruProject" } );
+		ExtraModuleNames.AddRange( new string[] { "ProceduralMeshProject" } );
 	}
 }
