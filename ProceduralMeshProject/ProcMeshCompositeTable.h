@@ -13,7 +13,7 @@ class UMaterialInterface;
  * A procedural table mesh, with chairs!!!
  */
 UCLASS()
-class ZURUPROJECT_API AProcMeshCompositeTable : public AProcMeshBase
+class PROCEDURALMESHPROJECT_API AProcMeshCompositeTable : public AProcMeshBase
 {
 	GENERATED_UCLASS_BODY()
 
