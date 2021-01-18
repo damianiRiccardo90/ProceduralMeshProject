@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class ZuruProject : ModuleRules
+public class ProceduralMeshProject : ModuleRules
 {
-	public ZuruProject(ReadOnlyTargetRules Target) : base(Target)
+	public ProceduralMeshProject(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
