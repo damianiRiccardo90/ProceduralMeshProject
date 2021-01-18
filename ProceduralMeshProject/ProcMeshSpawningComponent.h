@@ -12,7 +12,7 @@ class UMaterialInterface;
  * Component that controls the spawning process of any ProcMeshBase into the scene
  */
 UCLASS(Blueprintable)
-class ZURUPROJECT_API UProcMeshSpawningComponent : public USceneComponent
+class PROCEDURALMESHPROJECT_API UProcMeshSpawningComponent : public USceneComponent
 {
 	GENERATED_UCLASS_BODY()
 
