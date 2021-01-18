@@ -13,7 +13,7 @@ class UMaterialInterface;
  * A procedural mesh cube
  */
 UCLASS()
-class ZURUPROJECT_API AProcMeshCube : public AProcMeshBase
+class PROCEDURALMESHPROJECT_API AProcMeshCube : public AProcMeshBase
 {
 	GENERATED_UCLASS_BODY()
 
