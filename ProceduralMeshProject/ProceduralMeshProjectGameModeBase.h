@@ -3,13 +3,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 
-#include "ZuruProjectGameModeBase.generated.h"
+#include "ProceduralMeshProjectGameModeBase.generated.h"
 
 
 class AProcMeshBase;
 
 UCLASS()
-class ZURUPROJECT_API AZuruProjectGameModeBase : public AGameModeBase
+class PROCEDURALMESHPROJECT_API AProceduralMeshProjectGameModeBase : public AGameModeBase
 {
 	GENERATED_UCLASS_BODY()
 
