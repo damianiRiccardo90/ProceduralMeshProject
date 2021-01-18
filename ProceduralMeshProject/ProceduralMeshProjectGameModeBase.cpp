@@ -1,10 +1,10 @@
-#include "ZuruProjectGameModeBase.h"
+#include "ProceduralMeshProjectGameModeBase.h"
 #include "DefaultPlayerController.h"
 #include "ProcMeshBase.h"
 #include <ProceduralMeshComponent.h>
 
 
-AZuruProjectGameModeBase::AZuruProjectGameModeBase(const class FObjectInitializer& ObjectInitializer)
+AProceduralMeshProjectGameModeBase::AProceduralMeshProjectGameModeBase(const class FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PlayerControllerClass = ADefaultPlayerController::StaticClass();
@@ -12,7 +12,7 @@ AZuruProjectGameModeBase::AZuruProjectGameModeBase(const class FObjectInitialize
 	SpectatorClass = nullptr;
 }
 
-void AZuruProjectGameModeBase::BeginPlay()
+void AProceduralMeshProjectGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
