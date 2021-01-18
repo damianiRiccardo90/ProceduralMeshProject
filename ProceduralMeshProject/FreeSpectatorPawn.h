@@ -10,7 +10,7 @@
  * The free camera spectator pawn
  */
 UCLASS()
-class ZURUPROJECT_API AFreeSpectatorPawn : public ASpectatorPawn
+class PROCEDURALMESHPROJECT_API AFreeSpectatorPawn : public ASpectatorPawn
 {
 	GENERATED_UCLASS_BODY()
 
