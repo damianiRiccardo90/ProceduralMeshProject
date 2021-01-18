@@ -21,7 +21,7 @@ class AProcMeshCube;
  * Component that can be attached to any ProcMeshBase that control the scaling of the mesh
  */
 UCLASS(Blueprintable)
-class ZURUPROJECT_API UProcMeshScalingComponent : public UActorComponent
+class PROCEDURALMESHPROJECT_API UProcMeshScalingComponent : public UActorComponent
 {
 	GENERATED_UCLASS_BODY()
 
