@@ -10,7 +10,7 @@
  * The top-down camera spectator pawn
  */
 UCLASS()
-class ZURUPROJECT_API AEditingSpectatorPawn : public ASpectatorPawn
+class PROCEDURALMESHPROJECT_API AEditingSpectatorPawn : public ASpectatorPawn
 {
 	GENERATED_UCLASS_BODY()
 
