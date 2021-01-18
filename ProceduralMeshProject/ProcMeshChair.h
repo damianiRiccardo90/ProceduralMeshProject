@@ -12,7 +12,7 @@ class UMaterialInterface;
  * A procedural chair mesh
  */
 UCLASS()
-class ZURUPROJECT_API AProcMeshChair : public AProcMeshBase
+class PROCEDURALMESHPROJECT_API AProcMeshChair : public AProcMeshBase
 {
 	GENERATED_UCLASS_BODY()
 
