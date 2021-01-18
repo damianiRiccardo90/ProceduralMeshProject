@@ -6,7 +6,7 @@
 
 
 UCLASS()
-class ZURUPROJECT_API ULinearAlgebraFunctionLibrary : public UBlueprintFunctionLibrary
+class PROCEDURALMESHPROJECT_API ULinearAlgebraFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
